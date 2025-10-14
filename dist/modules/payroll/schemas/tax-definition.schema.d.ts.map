@@ -1,0 +1,1 @@
+{"version":3,"file":"tax-definition.schema.d.ts","sourceRoot":"","sources":["../../../../src/modules/payroll/schemas/tax-definition.schema.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,gBAAgB,EAAE,MAAM,UAAU,CAAC;AAE5C,qBACa,aAAa;IAExB,OAAO,EAAG,MAAM,CAAC;IAGjB,OAAO,EAAG,MAAM,CAAC;CAClB;AAED,MAAM,MAAM,qBAAqB,GAAG,gBAAgB,CAAC,aAAa,CAAC,CAAC;AACpE,eAAO,MAAM,mBAAmB;;;;;;;;EAA8C,CAAC"}
