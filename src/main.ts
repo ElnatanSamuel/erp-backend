@@ -30,14 +30,12 @@ async function bootstrap() {
     'http://localhost:3002',
     'https://erp-new.vercel.app',
   ]);
-  const FRONTEND_URL = process.env.FRONTEND_URL; // fallback origin (exact), e.g. https://erp-new.vercel.app
   if (instance?.use) {
     instance.use((req: any, res: any, next: any) => {
       const origin = req.headers.origin as string | undefined;
       // Choose an exact origin to allow (never '*')
       let allowOrigin: string | undefined;
       if (origin && allowedOrigins.has(origin)) allowOrigin = origin;
-      else if (FRONTEND_URL) allowOrigin = FRONTEND_URL;
       // Remove any pre-existing CORS headers injected by downstream handlers
       res.removeHeader('Access-Control-Allow-Origin');
       res.removeHeader('Access-Control-Allow-Credentials');
