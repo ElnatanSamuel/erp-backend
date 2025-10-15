@@ -4,6 +4,9 @@
   "private": true,
   "type": "commonjs",
   "main": "dist/main.js",
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "dev": "nest start --watch",
     "build": "nest build",
