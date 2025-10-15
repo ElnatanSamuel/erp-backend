@@ -14,6 +14,8 @@ exports.auth = (0, better_auth_1.betterAuth)({
         'http://localhost:4000',
         'http://localhost:3000',
         'http://localhost:3002',
+        'https://erp-new.vercel.app',
+        'https://erpbackend-two.vercel.app',
     ],
     emailAndPassword: {
         enabled: true,
