@@ -50,7 +50,7 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const user_schema_1 = require("./schemas/user.schema");
-const bcrypt = __importStar(require("bcrypt"));
+const bcrypt = __importStar(require("bcryptjs"));
 let UsersService = class UsersService {
     userModel;
     constructor(userModel) {
@@ -72,7 +72,7 @@ let UsersService = class UsersService {
     async countAll() {
         return this.userModel.countDocuments().exec();
     }
-    async findMany({ q, role, page = 1, limit = 10 }) {
+    async findMany({ q, role, page = 1, limit = 10, }) {
         const filter = {};
         if (q && q.trim()) {
             const rx = new RegExp(q.trim(), 'i');
@@ -91,7 +91,10 @@ let UsersService = class UsersService {
     async createStaff(input) {
         const name = `${input.firstName} ${input.lastName}`.trim();
         // Generate unique staffId
-        const roleCode = (input.role || 'STF').slice(0, 3).toUpperCase().replace(/[^A-Z]/g, '') || 'STF';
+        const roleCode = (input.role || 'STF')
+            .slice(0, 3)
+            .toUpperCase()
+            .replace(/[^A-Z]/g, '') || 'STF';
         let staffId;
         for (;;) {
             const rand = Math.floor(1000 + Math.random() * 9000);
@@ -102,7 +105,10 @@ let UsersService = class UsersService {
         }
         // Generate official email
         const domain = process.env.OFFICIAL_EMAIL_DOMAIN || 'company.local';
-        const base = `${input.firstName}.${input.lastName}`.toLowerCase().replace(/\s+/g, '.').replace(/[^a-z0-9.]/g, '');
+        const base = `${input.firstName}.${input.lastName}`
+            .toLowerCase()
+            .replace(/\s+/g, '.')
+            .replace(/[^a-z0-9.]/g, '');
         let email = `${base}@${domain}`;
         let suffix = 1;
         while (await this.userModel.findOne({ email }).lean()) {

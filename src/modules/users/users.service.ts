@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from './schemas/user.schema';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
@@ -29,7 +29,17 @@ export class UsersService {
     return this.userModel.countDocuments().exec();
   }
 
-  async findMany({ q, role, page = 1, limit = 10 }: { q?: string; role?: string; page?: number; limit?: number }) {
+  async findMany({
+    q,
+    role,
+    page = 1,
+    limit = 10,
+  }: {
+    q?: string;
+    role?: string;
+    page?: number;
+    limit?: number;
+  }) {
     const filter: any = {};
     if (q && q.trim()) {
       const rx = new RegExp(q.trim(), 'i');
@@ -46,10 +56,22 @@ export class UsersService {
     return { items, total };
   }
 
-  async createStaff(input: { firstName: string; lastName: string; gender?: string; phone?: string; role?: string; designation?: string; photoUrl?: string }) {
+  async createStaff(input: {
+    firstName: string;
+    lastName: string;
+    gender?: string;
+    phone?: string;
+    role?: string;
+    designation?: string;
+    photoUrl?: string;
+  }) {
     const name = `${input.firstName} ${input.lastName}`.trim();
     // Generate unique staffId
-    const roleCode = (input.role || 'STF').slice(0, 3).toUpperCase().replace(/[^A-Z]/g, '') || 'STF';
+    const roleCode =
+      (input.role || 'STF')
+        .slice(0, 3)
+        .toUpperCase()
+        .replace(/[^A-Z]/g, '') || 'STF';
     let staffId: string;
     for (;;) {
       const rand = Math.floor(1000 + Math.random() * 9000);
@@ -60,7 +82,10 @@ export class UsersService {
 
     // Generate official email
     const domain = process.env.OFFICIAL_EMAIL_DOMAIN || 'company.local';
-    const base = `${input.firstName}.${input.lastName}`.toLowerCase().replace(/\s+/g, '.').replace(/[^a-z0-9.]/g, '');
+    const base = `${input.firstName}.${input.lastName}`
+      .toLowerCase()
+      .replace(/\s+/g, '.')
+      .replace(/[^a-z0-9.]/g, '');
     let email = `${base}@${domain}`;
     let suffix = 1;
     while (await this.userModel.findOne({ email }).lean()) {
@@ -88,7 +113,18 @@ export class UsersService {
     return { user: doc, generatedEmail: email, generatedStaffId: staffId };
   }
 
-  async updateStaff(id: string, input: { firstName?: string; lastName?: string; gender?: string; phone?: string; role?: string; designation?: string; photoUrl?: string }) {
+  async updateStaff(
+    id: string,
+    input: {
+      firstName?: string;
+      lastName?: string;
+      gender?: string;
+      phone?: string;
+      role?: string;
+      designation?: string;
+      photoUrl?: string;
+    }
+  ) {
     const update: any = {};
     for (const [k, v] of Object.entries(input)) {
       if (typeof v !== 'undefined' && v !== null && v !== '') update[k] = v;
