@@ -6,7 +6,8 @@ import { toNodeHandler } from 'better-auth/node';
 import { auth } from './better-auth';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  // Important: disable Nest's built-in CORS so we fully control headers below
+  const app = await NestFactory.create(AppModule, { cors: false });
 
   app.setGlobalPrefix('api');
   // App-level CORS as baseline (Nest will echo request origin when origin=true)
@@ -29,13 +30,28 @@ async function bootstrap() {
     'http://localhost:3002',
     'https://erp-new.vercel.app',
   ]);
+  const FRONTEND_URL = process.env.FRONTEND_URL; // fallback origin (exact), e.g. https://erp-new.vercel.app
   if (instance?.use) {
     instance.use((req: any, res: any, next: any) => {
       const origin = req.headers.origin as string | undefined;
-      if (origin && allowedOrigins.has(origin)) {
-        res.setHeader('Access-Control-Allow-Origin', origin);
-        // Ensure caches vary by Origin for proxies/CDNs
-        res.setHeader('Vary', 'Origin');
+      // Choose an exact origin to allow (never '*')
+      let allowOrigin: string | undefined;
+      if (origin && allowedOrigins.has(origin)) allowOrigin = origin;
+      else if (FRONTEND_URL) allowOrigin = FRONTEND_URL;
+      // Remove any pre-existing CORS headers injected by downstream handlers
+      res.removeHeader('Access-Control-Allow-Origin');
+      res.removeHeader('Access-Control-Allow-Credentials');
+      res.removeHeader('Access-Control-Allow-Methods');
+      res.removeHeader('Access-Control-Allow-Headers');
+
+      if (allowOrigin) {
+        res.setHeader('Access-Control-Allow-Origin', allowOrigin);
+        if (origin) res.setHeader('Vary', 'Origin');
+      }
+      // Minimal runtime trace (one-liner) to verify origin negotiation in logs
+      if (process.env.NODE_ENV !== 'production') {
+        // eslint-disable-next-line no-console
+        console.log('[CORS]', { origin, allowOrigin });
       }
       res.setHeader('Access-Control-Allow-Credentials', 'true');
       res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
