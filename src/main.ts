@@ -20,50 +20,50 @@ async function bootstrap() {
   // });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
-  // Mount Better Auth handler (cover Express v4/v5 and root path)
-  const httpAdapter = app.getHttpAdapter();
-  const instance = httpAdapter.getInstance?.() as any;
-
   // Explicit CORS middleware (runs before all routes, including auth handler)
-  const allowedOrigins = new Set<string>([
-    'http://localhost:3000',
-    'http://localhost:3002',
-    'https://erp-new.vercel.app',
-  ]);
-  if (instance?.use) {
-    instance.use((req: any, res: any, next: any) => {
-      const origin = req.headers.origin as string | undefined;
-      // Choose an exact origin to allow (never '*')
-      let allowOrigin: string | undefined;
-      if (origin && allowedOrigins.has(origin)) allowOrigin = origin;
-      // Remove any pre-existing CORS headers injected by downstream handlers
-      res.removeHeader('Access-Control-Allow-Origin');
-      res.removeHeader('Access-Control-Allow-Credentials');
-      res.removeHeader('Access-Control-Allow-Methods');
-      res.removeHeader('Access-Control-Allow-Headers');
+  // Temporarily allow any requesting Origin (echo back) to unblock credentials in production.
+  // If you need to restrict, replace this with an allowlist check.
+  app.use((req: any, res: any, next: any) => {
+    const origin = req.headers.origin as string | undefined;
+    const allowOrigin = origin || undefined; // echo exact origin when present
 
+    // Intercept writeHead to guarantee headers are present right before send
+    const origWriteHead = res.writeHead;
+    res.writeHead = function patchedWriteHead(this: any, ...args: any[]) {
+      // Remove any pre-existing conflicting headers, then set ours
+      this.removeHeader('Access-Control-Allow-Origin');
+      this.removeHeader('Access-Control-Allow-Credentials');
+      this.removeHeader('Access-Control-Allow-Methods');
+      this.removeHeader('Access-Control-Allow-Headers');
+      if (allowOrigin) {
+        this.setHeader('Access-Control-Allow-Origin', allowOrigin);
+        this.setHeader('Vary', 'Origin');
+      }
+      this.setHeader('Access-Control-Allow-Credentials', 'true');
+      this.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+      this.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, X-Requested-With');
+      return origWriteHead.apply(this, args);
+    };
+
+    // Handle preflight early
+    if (req.method === 'OPTIONS') {
       if (allowOrigin) {
         res.setHeader('Access-Control-Allow-Origin', allowOrigin);
-        if (origin) res.setHeader('Vary', 'Origin');
-      }
-      // Minimal runtime trace (one-liner) to verify origin negotiation in logs
-      if (process.env.NODE_ENV !== 'production') {
-        // eslint-disable-next-line no-console
-        console.log('[CORS]', { origin, allowOrigin });
+        res.setHeader('Vary', 'Origin');
       }
       res.setHeader('Access-Control-Allow-Credentials', 'true');
       res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
-      res.setHeader(
-        'Access-Control-Allow-Headers',
-        'Content-Type, Authorization, Accept, X-Requested-With'
-      );
-      if (req.method === 'OPTIONS') {
-        res.status(204).end();
-        return;
-      }
-      next();
-    });
-  }
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, X-Requested-With');
+      res.status(204).end();
+      return;
+    }
+    next();
+  });
+
+  // Mount Better Auth handler (cover Express v4/v5 and root path)
+  const httpAdapter = app.getHttpAdapter();
+  const instance = httpAdapter.getInstance?.() as any;
+  
   if (instance?.all) {
     instance.all('/api/auth', toNodeHandler(auth));
     instance.all('/api/auth/*', toNodeHandler(auth));
