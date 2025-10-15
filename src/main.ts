@@ -10,19 +10,19 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
   // App-level CORS as baseline (Nest will echo request origin when origin=true)
-  app.enableCors({
-    origin: true,
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],
-    exposedHeaders: ['Content-Type', 'Authorization'],
-  });
+  // app.enableCors({
+  //   origin: true,
+  //   credentials: true,
+  //   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  //   allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],
+  //   exposedHeaders: ['Content-Type', 'Authorization'],
+  // });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   // Mount Better Auth handler (cover Express v4/v5 and root path)
   const httpAdapter = app.getHttpAdapter();
   const instance = httpAdapter.getInstance?.() as any;
-  
+
   // Explicit CORS middleware (runs before all routes, including auth handler)
   const allowedOrigins = new Set<string>([
     'http://localhost:3000',
@@ -32,14 +32,17 @@ async function bootstrap() {
   if (instance?.use) {
     instance.use((req: any, res: any, next: any) => {
       const origin = req.headers.origin as string | undefined;
-      if (origin && (allowedOrigins.has(origin))) {
+      if (origin && allowedOrigins.has(origin)) {
         res.setHeader('Access-Control-Allow-Origin', origin);
         // Ensure caches vary by Origin for proxies/CDNs
         res.setHeader('Vary', 'Origin');
       }
       res.setHeader('Access-Control-Allow-Credentials', 'true');
       res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
-      res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, X-Requested-With');
+      res.setHeader(
+        'Access-Control-Allow-Headers',
+        'Content-Type, Authorization, Accept, X-Requested-With'
+      );
       if (req.method === 'OPTIONS') {
         res.status(204).end();
         return;
@@ -60,4 +63,3 @@ async function bootstrap() {
   console.log(`Backend listening on http://localhost:${port}`);
 }
 bootstrap();
-
