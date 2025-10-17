@@ -1,5 +1,4 @@
 import { AuthService } from './auth.service';
-import type { Response } from 'express';
 declare class RegisterDto {
     email: string;
     name: string;
@@ -35,7 +34,7 @@ export declare class AuthController {
             name: string;
         };
     }>;
-    logout(res: Response): Promise<{
+    logout(): Promise<{
         readonly ok: true;
     }>;
 }

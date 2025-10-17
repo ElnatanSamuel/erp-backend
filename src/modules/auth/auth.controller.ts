@@ -46,21 +46,8 @@ export class AuthController {
 
   @Post('logout')
   @HttpCode(200)
-  async logout(@Res({ passthrough: true }) res: Response) {
-    // Clear common cookie names that may be set by Better Auth or custom JWT flows
-    const names = [
-      'better-auth.session',
-      'better-auth.session.sig',
-      'auth_session',
-      'session',
-      'access_token',
-      'refresh_token',
-    ];
-    for (const n of names) {
-      // Clear both httpOnly and non-httpOnly variants
-      res.cookie(n, '', { maxAge: 0, httpOnly: true, path: '/' });
-      res.cookie(n, '', { maxAge: 0, httpOnly: false, path: '/' });
-    }
+  async logout() {
+    // JWT tokens are stored client-side, no server-side cleanup needed
     return { ok: true } as const;
   }
 }
