@@ -37,6 +37,9 @@ let LogisticsController = class LogisticsController {
             throw new common_1.NotFoundException('Request not found');
         return x;
     }
+    async update(id, body) {
+        return this.svc.update(id, body);
+    }
     async delete(id) {
         return this.svc.delete(id);
     }
@@ -72,6 +75,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], LogisticsController.prototype, "get", null);
+__decorate([
+    (0, common_1.Put)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], LogisticsController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),

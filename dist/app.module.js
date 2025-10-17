@@ -25,6 +25,7 @@ const trainings_module_1 = require("./modules/trainings/trainings.module");
 const stocks_module_1 = require("./modules/stocks/stocks.module");
 const procurement_module_1 = require("./modules/procurement/procurement.module");
 const payment_voucher_module_1 = require("./modules/payment-voucher/payment-voucher.module");
+const staff_applications_module_1 = require("./modules/staff-applications/staff-applications.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -48,6 +49,7 @@ exports.AppModule = AppModule = __decorate([
             stocks_module_1.StocksModule,
             procurement_module_1.ProcurementModule,
             payment_voucher_module_1.PaymentVoucherModule,
+            staff_applications_module_1.StaffApplicationsModule,
         ],
     })
 ], AppModule);

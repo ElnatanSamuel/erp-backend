@@ -10,11 +10,13 @@ export declare class Logistic {
     dateFrom?: Date;
     dateTo?: Date;
     voucherName?: string;
+    voucherUrl?: string;
     accountName?: string;
     accountNumber?: string;
     bankName?: string;
     verifierSignature?: string;
     authorizerSignature?: string;
+    remarks?: string;
 }
 export type LogisticDocument = HydratedDocument<Logistic>;
 export declare const LogisticSchema: import("mongoose").Schema<Logistic, import("mongoose").Model<Logistic, any, any, any, import("mongoose").Document<unknown, any, Logistic, any, {}> & Logistic & {

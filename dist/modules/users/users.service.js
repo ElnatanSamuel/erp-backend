@@ -70,10 +70,17 @@ let UsersService = class UsersService {
         return user.save();
     }
     async countAll() {
-        return this.userModel.countDocuments().exec();
+        return this.userModel.countDocuments({ isStaff: true }).exec();
+    }
+    async countDesignations() {
+        const result = await this.userModel.distinct('designation', {
+            isStaff: true,
+            designation: { $exists: true, $ne: '' }
+        }).exec();
+        return result.length;
     }
     async findMany({ q, role, page = 1, limit = 10, }) {
-        const filter = {};
+        const filter = { isStaff: true }; // Only show actual staff members
         if (q && q.trim()) {
             const rx = new RegExp(q.trim(), 'i');
             filter.$or = [{ name: rx }, { email: rx }];
@@ -130,6 +137,7 @@ let UsersService = class UsersService {
             role: input.role,
             designation: input.designation,
             photoUrl: input.photoUrl,
+            isStaff: true, // Mark as actual staff member
         });
         return { user: doc, generatedEmail: email, generatedStaffId: staffId };
     }

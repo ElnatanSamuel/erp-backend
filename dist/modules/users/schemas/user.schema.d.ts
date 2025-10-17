@@ -12,6 +12,7 @@ export declare class User {
     role?: string;
     designation?: string;
     photoUrl?: string;
+    isStaff?: boolean;
 }
 export declare const UserSchema: import("mongoose").Schema<User, import("mongoose").Model<User, any, any, any, import("mongoose").Document<unknown, any, User, any, {}> & User & {
     _id: import("mongoose").Types.ObjectId;

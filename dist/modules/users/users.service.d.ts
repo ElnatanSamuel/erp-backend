@@ -48,6 +48,7 @@ export declare class UsersService {
         _id: import("mongoose").Types.ObjectId;
     }>>;
     countAll(): Promise<number>;
+    countDesignations(): Promise<number>;
     findMany({ q, role, page, limit, }: {
         q?: string;
         role?: string;

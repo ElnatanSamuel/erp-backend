@@ -14,21 +14,27 @@ const common_1 = require("@nestjs/common");
 const users_service_1 = require("../users/users.service");
 const memos_service_1 = require("../memos/memos.service");
 const payment_voucher_service_1 = require("../payment-voucher/payment-voucher.service");
+const staff_applications_service_1 = require("../staff-applications/staff-applications.service");
 let DashboardService = class DashboardService {
     users;
     memos;
     paymentVouchers;
-    constructor(users, memos, paymentVouchers) {
+    staffApplications;
+    constructor(users, memos, paymentVouchers, staffApplications) {
         this.users = users;
         this.memos = memos;
         this.paymentVouchers = paymentVouchers;
+        this.staffApplications = staffApplications;
     }
     async summary() {
-        const [staffCount, memoData, paymentData, recent] = await Promise.all([
+        const [staffCount, memoData, paymentData, recent, designationCount, applicationCount, appStats] = await Promise.all([
             this.users.countAll(),
             this.memos.list({ page: 1, limit: 5 }),
             this.paymentVouchers.list({ page: 1, limit: 5 }),
             this.users.findMany({ page: 1, limit: 8 }),
+            this.users.countDesignations(),
+            this.staffApplications.countAll(),
+            this.staffApplications.getStats(),
         ]);
         const memos = memoData.items.map((m) => ({
             sn: m.id.substring(0, 8),
@@ -54,13 +60,14 @@ let DashboardService = class DashboardService {
         return {
             stats: {
                 staffCount,
-                applicationCount: 0,
+                applicationCount,
                 projectsCount: 0,
-                departmentsCount: 0,
+                departmentsCount: designationCount,
                 trendStaff: '+0%',
                 trendApplications: '+0%',
                 trendProjects: '+0%',
             },
+            applicationStats: appStats,
             memos,
             payments,
             staff,
@@ -72,6 +79,7 @@ exports.DashboardService = DashboardService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [users_service_1.UsersService,
         memos_service_1.MemosService,
-        payment_voucher_service_1.PaymentVoucherService])
+        payment_voucher_service_1.PaymentVoucherService,
+        staff_applications_service_1.StaffApplicationsService])
 ], DashboardService);
 //# sourceMappingURL=dashboard.service.js.map

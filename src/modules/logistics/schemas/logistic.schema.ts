@@ -14,11 +14,13 @@ export class Logistic {
   @Prop({ type: Date }) dateFrom?: Date;
   @Prop({ type: Date }) dateTo?: Date;
   @Prop({ default: '' }) voucherName?: string; // uploaded filename or reference
+  @Prop({ default: '' }) voucherUrl?: string; // URL to the uploaded voucher file
   @Prop({ default: '' }) accountName?: string;
   @Prop({ default: '' }) accountNumber?: string;
   @Prop({ default: '' }) bankName?: string;
   @Prop({ default: '' }) verifierSignature?: string;
   @Prop({ default: '' }) authorizerSignature?: string;
+  @Prop({ default: '' }) remarks?: string; // Action remarks when approving/rejecting
 }
 
 export type LogisticDocument = HydratedDocument<Logistic>;

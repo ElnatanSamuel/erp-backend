@@ -37,6 +37,9 @@ export class User {
 
   @Prop()
   photoUrl?: string;
+
+  @Prop({ default: false })
+  isStaff?: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

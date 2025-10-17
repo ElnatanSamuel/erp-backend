@@ -22,6 +22,7 @@ export class LogisticsService {
       dateFrom: input.dateFrom ? new Date(input.dateFrom as any) : undefined,
       dateTo: input.dateTo ? new Date(input.dateTo as any) : undefined,
       voucherName: input.voucherName || '',
+      voucherUrl: input.voucherUrl || '',
       accountName: input.accountName || '',
       accountNumber: input.accountNumber || '',
       bankName: input.bankName || '',
@@ -70,6 +71,18 @@ export class LogisticsService {
     const x = await this.model.findById(id).lean();
     if (!x) return null;
     return { id: String(x._id), ...x } as any;
+  }
+
+  async update(id: string, input: Partial<Logistic>) {
+    const update: any = {};
+    if (input.status) update.status = input.status;
+    if (input.remarks !== undefined) update.remarks = input.remarks;
+    if (input.voucherName !== undefined) update.voucherName = input.voucherName;
+    if (input.voucherUrl !== undefined) update.voucherUrl = input.voucherUrl;
+    
+    const doc = await this.model.findByIdAndUpdate(id, update, { new: true }).lean();
+    if (!doc) throw new BadRequestException('Logistics request not found');
+    return { id: String(doc._id), ...doc };
   }
 
   async delete(id: string) {

@@ -23,6 +23,7 @@ let User = class User {
     role;
     designation;
     photoUrl;
+    isStaff;
 };
 exports.User = User;
 __decorate([
@@ -69,6 +70,10 @@ __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], User.prototype, "photoUrl", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: false }),
+    __metadata("design:type", Boolean)
+], User.prototype, "isStaff", void 0);
 exports.User = User = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], User);

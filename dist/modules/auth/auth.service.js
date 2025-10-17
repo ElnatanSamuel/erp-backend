@@ -64,6 +64,7 @@ let AuthService = class AuthService {
             email: input.email,
             name: input.name,
             passwordHash,
+            isStaff: false, // Users who register are admins/HR, not staff
         });
         const token = await this.jwt.signAsync({ sub: user.id, email: user.email });
         return { token, user: { id: user.id, email: user.email, name: user.name } };

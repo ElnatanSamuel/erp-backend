@@ -16,6 +16,7 @@ import { TrainingsModule } from './modules/trainings/trainings.module';
 import { StocksModule } from './modules/stocks/stocks.module';
 import { ProcurementModule } from './modules/procurement/procurement.module';
 import { PaymentVoucherModule } from './modules/payment-voucher/payment-voucher.module';
+import { StaffApplicationsModule } from './modules/staff-applications/staff-applications.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { PaymentVoucherModule } from './modules/payment-voucher/payment-voucher.
     StocksModule,
     ProcurementModule,
     PaymentVoucherModule,
+    StaffApplicationsModule,
   ],
 })
 export class AppModule {}

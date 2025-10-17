@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { MemosService } from '../memos/memos.service';
 import { PaymentVoucherService } from '../payment-voucher/payment-voucher.service';
+import { StaffApplicationsService } from '../staff-applications/staff-applications.service';
 
 @Injectable()
 export class DashboardService {
@@ -9,14 +10,18 @@ export class DashboardService {
     private users: UsersService,
     private memos: MemosService,
     private paymentVouchers: PaymentVoucherService,
+    private staffApplications: StaffApplicationsService,
   ) {}
 
   async summary() {
-    const [staffCount, memoData, paymentData, recent] = await Promise.all([
+    const [staffCount, memoData, paymentData, recent, designationCount, applicationCount, appStats] = await Promise.all([
       this.users.countAll(),
       this.memos.list({ page: 1, limit: 5 }),
       this.paymentVouchers.list({ page: 1, limit: 5 }),
       this.users.findMany({ page: 1, limit: 8 }),
+      this.users.countDesignations(),
+      this.staffApplications.countAll(),
+      this.staffApplications.getStats(),
     ]);
 
     const memos = memoData.items.map((m: any) => ({
@@ -46,13 +51,14 @@ export class DashboardService {
     return {
       stats: {
         staffCount,
-        applicationCount: 0,
+        applicationCount,
         projectsCount: 0,
-        departmentsCount: 0,
+        departmentsCount: designationCount,
         trendStaff: '+0%',
         trendApplications: '+0%',
         trendProjects: '+0%',
       },
+      applicationStats: appStats,
       memos,
       payments,
       staff,

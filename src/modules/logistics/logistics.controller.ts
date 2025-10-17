@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query } from '@nestjs/common';
 import { LogisticsService } from './logistics.service';
 
 @Controller('logistics')
@@ -32,6 +32,11 @@ export class LogisticsController {
     const x = await this.svc.get(id);
     if (!x) throw new NotFoundException('Request not found');
     return x;
+  }
+
+  @Put(':id')
+  async update(@Param('id') id: string, @Body() body: any) {
+    return this.svc.update(id, body);
   }
 
   @Delete(':id')

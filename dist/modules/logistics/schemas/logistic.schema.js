@@ -23,11 +23,13 @@ let Logistic = class Logistic {
     dateFrom;
     dateTo;
     voucherName; // uploaded filename or reference
+    voucherUrl; // URL to the uploaded voucher file
     accountName;
     accountNumber;
     bankName;
     verifierSignature;
     authorizerSignature;
+    remarks; // Action remarks when approving/rejecting
 };
 exports.Logistic = Logistic;
 __decorate([
@@ -73,6 +75,10 @@ __decorate([
 __decorate([
     (0, mongoose_1.Prop)({ default: '' }),
     __metadata("design:type", String)
+], Logistic.prototype, "voucherUrl", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: '' }),
+    __metadata("design:type", String)
 ], Logistic.prototype, "accountName", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: '' }),
@@ -90,6 +96,10 @@ __decorate([
     (0, mongoose_1.Prop)({ default: '' }),
     __metadata("design:type", String)
 ], Logistic.prototype, "authorizerSignature", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: '' }),
+    __metadata("design:type", String)
+], Logistic.prototype, "remarks", void 0);
 exports.Logistic = Logistic = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], Logistic);

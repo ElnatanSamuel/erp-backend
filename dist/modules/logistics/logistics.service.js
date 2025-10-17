@@ -39,6 +39,7 @@ let LogisticsService = class LogisticsService {
             dateFrom: input.dateFrom ? new Date(input.dateFrom) : undefined,
             dateTo: input.dateTo ? new Date(input.dateTo) : undefined,
             voucherName: input.voucherName || '',
+            voucherUrl: input.voucherUrl || '',
             accountName: input.accountName || '',
             accountNumber: input.accountNumber || '',
             bankName: input.bankName || '',
@@ -87,6 +88,21 @@ let LogisticsService = class LogisticsService {
         if (!x)
             return null;
         return { id: String(x._id), ...x };
+    }
+    async update(id, input) {
+        const update = {};
+        if (input.status)
+            update.status = input.status;
+        if (input.remarks !== undefined)
+            update.remarks = input.remarks;
+        if (input.voucherName !== undefined)
+            update.voucherName = input.voucherName;
+        if (input.voucherUrl !== undefined)
+            update.voucherUrl = input.voucherUrl;
+        const doc = await this.model.findByIdAndUpdate(id, update, { new: true }).lean();
+        if (!doc)
+            throw new common_1.BadRequestException('Logistics request not found');
+        return { id: String(doc._id), ...doc };
     }
     async delete(id) {
         await this.model.findByIdAndDelete(id).exec();

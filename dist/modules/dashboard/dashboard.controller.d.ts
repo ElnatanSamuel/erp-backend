@@ -12,6 +12,12 @@ export declare class DashboardController {
             trendApplications: string;
             trendProjects: string;
         };
+        applicationStats: {
+            pending: number;
+            reviewed: number;
+            approved: number;
+            rejected: number;
+        };
         memos: {
             sn: any;
             subject: any;

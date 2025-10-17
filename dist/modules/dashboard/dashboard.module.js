@@ -13,12 +13,13 @@ const dashboard_controller_1 = require("./dashboard.controller");
 const users_module_1 = require("../users/users.module");
 const memos_module_1 = require("../memos/memos.module");
 const payment_voucher_module_1 = require("../payment-voucher/payment-voucher.module");
+const staff_applications_module_1 = require("../staff-applications/staff-applications.module");
 let DashboardModule = class DashboardModule {
 };
 exports.DashboardModule = DashboardModule;
 exports.DashboardModule = DashboardModule = __decorate([
     (0, common_1.Module)({
-        imports: [users_module_1.UsersModule, memos_module_1.MemosModule, payment_voucher_module_1.PaymentVoucherModule],
+        imports: [users_module_1.UsersModule, memos_module_1.MemosModule, payment_voucher_module_1.PaymentVoucherModule, staff_applications_module_1.StaffApplicationsModule],
         providers: [dashboard_service_1.DashboardService],
         controllers: [dashboard_controller_1.DashboardController],
     })
